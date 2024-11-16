@@ -1,5 +1,4 @@
 {
-  "C_Cpp.default.compilerPath": "C:\\mingw64\\bin\\g++.exe",
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
   "C_Cpp_Runner.debuggerPath": "gdb",
@@ -56,14 +55,5 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "files.associations": {
-    "complex.h": "c",
-    "string": "c",
-    "stdio.h": "c",
-    "mktmath.h": "c",
-    "complex": "c",
-    "math.h": "c",
-    "string_view": "c"
-  }
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }
