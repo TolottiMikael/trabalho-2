@@ -11,7 +11,7 @@ void multiplyMatrices(double complex mat1[][3], int row1, int col1, double compl
             result[x][y] = 0;
             for (z = 0; z < col1; z++)
             {
-                //ta errado
+                // ta errado
                 result[x][y] += mat1[x][z] * mat2[z][y];
             }
         }
@@ -98,13 +98,6 @@ void getIdentityMatrix(int length, double complex mat[length][length])
     }
 }
 
-double complex get2x2Determinant(double complex mat[2][2])
-{
-    double complex result = mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
-    printf("returned %lf + i%lf\n", creal(result), cimag(result));
-    return result;
-}
-
 void cutMatrix(int row, int col, double complex mat[row][col], int rowCut, int colCut, double complex resultantMatrix[row - 1][col - 1])
 {
 
@@ -116,7 +109,7 @@ void cutMatrix(int row, int col, double complex mat[row][col], int rowCut, int c
     double complex **result;
 
     for (i = 0; i < row - 1; i++)
-    {   
+    {
         rowcut_count = 0;
         if (i >= rowCut)
         {
@@ -134,33 +127,64 @@ void cutMatrix(int row, int col, double complex mat[row][col], int rowCut, int c
     }
 }
 
+double complex get2x2Determinant(double complex mat[2][2])
+{
+    double complex result = mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
+    // printf("returned %lf + i%lf\n", creal(result), cimag(result));
+    return result;
+}
+
 double complex getDeterminant(int size, double complex mat[size][size])
 {
-    double complex matrix[size - 1][size - 1];
     double complex aux[size - 1][size - 1];
+    double complex value = 0;
     if (size > 2)
     {
         // separar e obter o tamanho!
-        int k = 0;
         int l = 0;
-        for (k = 0; k < size ; k++)
+        for (l = 0; l < size; l++)
         {
-            for (l = 0; l < size; l++)
-            {
-                cutMatrix(size, size, mat, k, l, aux);
-                printf("(%d:%d) => k=%d l=%d\n", size, size, k, l);
-                double complex det = getDeterminant(size - 1, aux);
-                matrix[k][l] = pow(-1, k + l) * mat[k][l]* det;
-            }
+            cutMatrix(size, size, mat, 0, l, aux);
+            // printf("(%d:%d) => k=%d l=%d\n", size, size, 0, l);
+            double complex det = getDeterminant(size - 1, aux);
+            value += pow(-1, 0 + l) * det * mat[0][l];
+            // printf("um response  :  %lf + i%lf\n", creal(value), cimag(value));
         }
+        return value;
     }
     else
     {
-        showMatrix(2, 2, mat);
+        // showMatrix(2, 2, mat);
         return get2x2Determinant(mat);
     }
 }
 
+double complex getCofactorMatrix(int size, double complex mat[size][size])
+{
+    double complex aux[size - 1][size - 1];
+    double complex Matrix[size][size];
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < size; i++)
+    {
+        for (j = 0; j < size; j++)
+        {
+            cutMatrix(size, size, mat, i, j, aux);
+            Matrix[i][j] = pow(-1, i + j) * getDeterminant(size - 1, aux);
+        }
+    }
+    return Matrix;
+}
+
 void inverse_matrix(int row, int col, double complex mat[row][col], double complex inv[row][col])
 {
+    // int i ,j;
+    // getIdentityMatrix(row, inv);
+    // for (i = 0; i< row; i++)
+    // {
+    //     for (j = 0; j < col; j++)
+    //     {
+
+    //     }
+    // }
 }

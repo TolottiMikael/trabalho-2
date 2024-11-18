@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "circuit/circuit.h"
-#include "mikaelMath\MKTMath.h"
+#include "../circuit/circuit.h"
+#include "../mikaelMath/MKTMath.h"
 
 
 

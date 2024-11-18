@@ -14,6 +14,7 @@ void getIdentityMatrix(int length, double complex mat[length][length]);
 double complex get2x2Determinant(double complex mat[2][2]);
 void cutMatrix(int row, int col, double complex mat[row][col], int rowCut, int colCut, double complex resultantMatrix[row-1][col-1]);
 double complex getDeterminant(int size,double complex mat[size][size]);
+double complex getCofactorMatrix(int size,double complex mat[size][size]);
 void inverse_matrix(int row, int col, double complex mat[row][col], double complex inv[row][col]);
 
 #include "MKTMath.c"
