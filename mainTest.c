@@ -37,8 +37,8 @@ int main()
     // double complex determinant3x3 = getDeterminant(3, matrix3x3);
     // printf("det 3x3: %lf + i%lf\n", creal(determinant3x3), cimag(determinant3x3));
 
-    double complex determinant5x5 = getDeterminant(5, matrix5x5Real);
-    printf("det 5x5: %lf + i%lf\n", creal(determinant5x5), cimag(determinant5x5));
+    // double complex determinant5x5 = getDeterminant(5, matrix5x5Real);
+    // printf("det 5x5: %lf + i%lf\n", creal(determinant5x5), cimag(determinant5x5));
 
     // double complex determinant3x3Real = getDeterminant(3, matrix3x3Real);
     // printf("det 3x3 só real: %lf + i%lf\n", creal(determinant3x3Real), cimag(determinant3x3Real));
@@ -46,5 +46,11 @@ int main()
     // double complex determinant4x4Real = getDeterminant(4, matrix4x4Real);
     // printf("det 4x4 só real: %lf + i%lf\n", creal(determinant4x4Real), cimag(determinant4x4Real));
 
+    double complex inverse[5][5];
+
+    getInverse_matrix(5, matrix5x5Real, inverse);
+
+
+    showMatrix(5,5, inverse);
     return 0;
 }

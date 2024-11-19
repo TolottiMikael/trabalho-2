@@ -1,8 +1,6 @@
 #include <stdio.h>
-#include "../circuit/circuit.h"
-#include "../mikaelMath/MKTMath.h"
-
-
+#include "./circuit/circuit.h"
+#include "./mikaelMath/MKTMath.h"
 
 int main()
 {
@@ -141,7 +139,6 @@ int main()
     printf("Matriz de Admitâncias y \n");
     printAdmittanceMatrix(matrixRange, y);
 
-    
     printf("\n\nMatriz de Admitâncias y \n");
     printAdmittanceMatrix(matrixRange, Y);
     printf("\n");
@@ -252,10 +249,10 @@ int main()
             deltaQ[i] = ((nodes[1][i].generator - nodes[1][i].carga.reativa) / Sbase) - nodes[1][i].reactive_Power;
         }
 
-        double H[matrixRange - 1][matrixRange - 1];
-        double J[matrixRange - 2][matrixRange - 1];
-        double N[matrixRange - 1][matrixRange - 2];
-        double L[matrixRange - 2][matrixRange - 2];
+        double complex H[matrixRange - 1][matrixRange - 1];
+        double complex J[matrixRange - 2][matrixRange - 1];
+        double complex N[matrixRange - 1][matrixRange - 2];
+        double complex L[matrixRange - 2][matrixRange - 2];
 
         int countSlackBarROW = 0;
         int countSlackBarCOL = 0;
@@ -341,10 +338,46 @@ int main()
             }
         }
 
-        double matrizJacobiana[matrixRange + 1][matrixRange + 1];
+        // matriz_Jacobiana matrizJacobiana = {matrixRange + 1, 3, (double complex **)H, (double complex **)N, (double complex **)J, (double complex **)L};
+        matriz_Jacobiana matrizJacobiana;
+        matrizJacobiana.matrixRange = matrixRange + 1;
+        matrizJacobiana.rangeH = 3;
 
-        getFinalMatrix(matrixRange + 1, H, N, J, L, matrizJacobiana);
-        showMatrix(5, 5, matrizJacobiana);
+        matrizJacobiana.H = malloc((matrizJacobiana.matrixRange - 1) * sizeof(double complex *));
+        matrizJacobiana.N = malloc((matrizJacobiana.matrixRange - 1) * sizeof(double complex *));
+        matrizJacobiana.J = malloc((matrizJacobiana.matrixRange - 2) * sizeof(double complex *));
+        matrizJacobiana.L = malloc((matrizJacobiana.matrixRange - 2) * sizeof(double complex *));
+        matrizJacobiana.Jacobiana = malloc((matrizJacobiana.matrixRange) * sizeof(double complex *));
+
+        for (i = 0; i < (matrizJacobiana.matrixRange - 1); i++)
+        {
+            matrizJacobiana.H[i] = malloc((matrizJacobiana.matrixRange - 1) * sizeof(double complex));
+            matrizJacobiana.N[i] = malloc((matrizJacobiana.matrixRange - 2) * sizeof(double complex));
+
+            matrizJacobiana.H[i] = H[i];
+            matrizJacobiana.N[i] = N[i];
+        }
+
+        for (i = 0; i < (matrizJacobiana.matrixRange - 2); i++)
+        {
+            matrizJacobiana.J[i] = malloc((matrizJacobiana.matrixRange - 1) * sizeof(double complex));
+            matrizJacobiana.L[i] = malloc((matrizJacobiana.matrixRange - 2) * sizeof(double complex));
+
+            matrizJacobiana.J[i] = J[i];
+            matrizJacobiana.L[i] = L[i];
+        }
+
+        for (i = 0; i < (matrizJacobiana.matrixRange); i++)
+        {
+            matrizJacobiana.Jacobiana[i] = malloc((matrizJacobiana.matrixRange) * sizeof(double complex));
+        }
+        
+        getFinalMatrix(matrixRange + 1, matrizJacobiana);
+
+        // printf("matriz L \n");
+        // showMatrix(2, 2, L);
+        // printf("matriz Jacobiana \n");
+        // showMatrix(5, 5, matrizJacobiana);
 
     } while (interaction < MAXInteration);
 

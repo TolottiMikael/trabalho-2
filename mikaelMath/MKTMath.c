@@ -35,32 +35,47 @@ void showMatrix(int row, int col, double complex mat[row][col])
 
 void getFinalMatrix(
     int matrixRange,
-    double H[matrixRange - 1][matrixRange - 1],
-    double N[matrixRange - 1][matrixRange - 2],
-    double J[matrixRange - 2][matrixRange - 1],
-    double L[matrixRange - 2][matrixRange - 2],
-    double matrizJacobiana[matrixRange + 1][matrixRange + 1])
+    matriz_Jacobiana matrizContainer)
 {
     int i = 0;
     int j = 0;
-    int rangeH = 3;
-    for (i = 0; i < matrixRange; i++)
-    {
-        for (j = 0; j < matrixRange; j++)
-        {
-            if (j >= rangeH)
-            {
+    int m = 0;
 
-                matrizJacobiana[i][j] = N[i][j - rangeH];
-            }
-            else
-            {
-                matrizJacobiana[i][j] = H[i][j];
-            }
-            printf("%d:%d \t", i, j);
+    double complex aux[matrixRange][matrixRange];
+    
+
+    for (i = 0; i < matrizContainer.rangeH; i++)
+    {
+        for (j = 0; j < matrizContainer.rangeH; j++)
+        {
+            // printf("(%d,%d)\t", i, j);
+
+            aux[i][j] = matrizContainer.H[i][j];
         }
-        printf("\n");
+        for (m = matrizContainer.rangeH; m < matrixRange; m++)
+        {
+            // printf("(%d,%d)\t", i, m);
+
+            aux[i][m] = matrizContainer.N[i][m];
+        }
+        // printf("\n");
     }
+    for (i = 0; i < matrixRange - matrizContainer.rangeH; i++)
+    {
+        for (j = 0; j < matrizContainer.rangeH; j++)
+        {
+            // printf("(%d,%d)\t", i, j);
+            aux[i + matrizContainer.rangeH][j] = matrizContainer.J[i][j];
+        }
+        for (m = matrizContainer.rangeH; m < matrixRange; m++)
+        {
+            // printf("(%d,%d)\t", i, m);
+            aux[i][m] = matrizContainer.L[i][m - matrizContainer.rangeH];
+        }
+        // printf("\n");
+    }
+    matrizContainer.Jacobiana = (double complex(**))aux;
+    showMatrix(matrixRange, matrixRange, (double complex(*)[matrixRange])matrizContainer.Jacobiana);
 }
 
 void printAdmittanceMatrix(int matrixRange, double complex Y[matrixRange][matrixRange])
@@ -159,10 +174,9 @@ double complex getDeterminant(int size, double complex mat[size][size])
     }
 }
 
-double complex getCofactorMatrix(int size, double complex mat[size][size])
+void getCofactorMatrix(int size, double complex mat[size][size], double complex result[size][size])
 {
     double complex aux[size - 1][size - 1];
-    double complex Matrix[size][size];
     int i = 0;
     int j = 0;
     for (i = 0; i < size; i++)
@@ -170,21 +184,40 @@ double complex getCofactorMatrix(int size, double complex mat[size][size])
         for (j = 0; j < size; j++)
         {
             cutMatrix(size, size, mat, i, j, aux);
-            Matrix[i][j] = pow(-1, i + j) * getDeterminant(size - 1, aux);
+            result[i][j] = pow(-1, i + j) * getDeterminant(size - 1, aux);
         }
     }
-    return Matrix;
+}
+void getTranspose(int size, double complex mat[size][size], double complex result[size][size])
+{
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < size; i++)
+    {
+        for (j = 0; j < size; j++)
+        {
+            result[i][j] = mat[j][i];
+        }
+    }
 }
 
-void inverse_matrix(int row, int col, double complex mat[row][col], double complex inv[row][col])
+// devo resolver o bug da inversão
+void getInverse_matrix(int size, double complex mat[size][size], double complex inv[size][size])
 {
-    // int i ,j;
-    // getIdentityMatrix(row, inv);
-    // for (i = 0; i< row; i++)
-    // {
-    //     for (j = 0; j < col; j++)
-    //     {
-
-    //     }
-    // }
+    double complex determinant = getDeterminant(size, mat);
+    double complex cofactor[size][size];
+    double complex adjoint[size][size];
+    getCofactorMatrix(size, mat, cofactor);
+    // printf("cofatores       \n");
+    // showMatrix(size, size, cofactor);
+    getTranspose(size, cofactor, adjoint);
+    // printf("matriz adjunta\n");
+    // showMatrix(size, size, adjoint);
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            inv[i][j] = adjoint[i][j] / determinant;
+        }
+    }
 }
